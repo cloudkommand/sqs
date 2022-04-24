@@ -13,7 +13,7 @@
                     "Effect": "Allow",
                     "Action": [
                         "sqs:AddPermission",
-                        "sqs:sqs:ChangeMessageVisibility",
+                        "sqs:ChangeMessageVisibility",
                         "sqs:CreateQueue",
                         "sqs:DeleteMessage",
                         "sqs:DeleteQueue",

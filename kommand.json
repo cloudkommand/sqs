@@ -1,0 +1,110 @@
+{
+    "components": {
+        "queue": {
+            "type": "ext",
+            "displayname": "CK SQS Queue",
+            "description": "Deploys an AWS SQS Queue. SQS queues are simple queues.",
+            "cloud": "AWS",
+            "resources": ["AWS::sqs::queue"],
+            "policy": {
+                "Version": "2012-10-17",
+                "Statement": [{
+                    "Sid": "Vis",
+                    "Effect": "Allow",
+                    "Action": [
+                        "sqs:AddPermission",
+                        "sqs:sqs:ChangeMessageVisibility",
+                        "sqs:CreateQueue",
+                        "sqs:DeleteMessage",
+                        "sqs:DeleteQueue",
+                        "sqs:GetQueueAttributes",
+                        "sqs:GetQueueUrl",
+                        "sqs:ListDeadLetterSourceQueues",
+                        "sqs:ListQueues",
+                        "sqs:ListQueueTags",
+                        "sqs:RemovePermission",
+                        "sqs:SetQueueAttributes",
+                        "sqs:TagQueue",
+                        "sqs:UntagQueue"
+                    ],
+                    "Resource": "*"
+                }]
+            },
+            "input": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "The name of the queue."
+                    },
+                    "fifo": {
+                        "type": "string",
+                        "description": "The ARN of the queue."
+                    },
+                    "delay_seconds": {
+                        "type": "string",
+                        "description": "The URL of the queue."
+                    },
+                    "retention_seconds": {
+                        "type": "string",
+                        "description": "The ARN of the queue."
+                    },
+                    "dead_letter_queue_arn": {
+                        "type": "string",
+                        "description": "The URL of the queue."
+                    },
+                    "max_count_before_dead_letter": {
+                        "type": "string",
+                        "description": "The ARN of the queue."
+                    },
+                    "policy": {
+                        "type": "string",
+                        "description": "The URL of the queue."
+                    },
+                    "kms_key_id": {
+                        "type": "string",
+                        "description": "The ARN of the queue."
+                    },
+                    "kms_key_reuse_seconds": {
+                        "type": "string",
+                        "description": "The URL of the queue."
+                    },
+                    "sqs_managed_sse": {
+                        "type": "string",
+                        "description": "The ARN of the queue."
+                    },
+                    "content_based_deduplication": {
+                        "type": "string",
+                        "description": "The URL of the queue."
+                    },
+                    "deduplication_scope": {
+                        "type": "string",
+                        "description": "The URL of the queue."
+                    },
+                    "fifo_throughput_limit": {
+                        "type": "string",
+                        "description": "The ARN of the queue."
+                    },
+                    "tags": {
+                        "type": "object",
+                        "description": "The URL of the queue."
+                    }
+                }
+            },
+            "props": {
+                "name": {
+                    "type": "string",
+                    "description": "The name of the queue."
+                },
+                "arn": {
+                    "type": "string",
+                    "description": "The ARN of the queue."
+                },
+                "url": {
+                    "type": "string",
+                    "description": "The URL of the queue."
+                }
+            }
+        }
+    }
+}

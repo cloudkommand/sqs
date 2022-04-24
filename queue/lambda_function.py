@@ -69,14 +69,14 @@ def lambda_handler(event, context):
         elif event.get("op") == "delete":
             eh.add_op("delete_queue", {"url":prev_state.get("props", {}).get("url"), "only_delete": True})
         
-        attributes = {
+        attributes = remove_none_attributes({
             "DelaySeconds": delay_seconds,
             "MaximumMessageSize": maximum_message_size,
             "MessageRetentionPeriod": retention_seconds,
             "Policy": json.dumps(policy),
             "RedrivePolicy": remove_none_attributes({
                 "deadLetterTargetArn": dead_letter_queue_arn,
-                "maxReceiveCount": str(max_count_before_dead_letter)
+                "maxReceiveCount": str(max_count_before_dead_letter) if max_count_before_dead_letter else None
             }),
             "ContentBasedDeduplication": content_based_deduplication,
             "DeduplicationScope": deduplication_scope,
@@ -85,7 +85,9 @@ def lambda_handler(event, context):
             "KmsMasterKeyId": kms_key_id,
             "KmsDataKeyReusePeriodSeconds": kms_key_reuse_seconds,
             "SqsManagedSseEnabled": sqs_managed_sse
-        }
+        })
+
+        attributes = {k:str(v) for k,v in attributes.items() if not isinstance(v, dict)}
 
         get_queue_url(queue_name, account_number, region)
         get_queue(attributes, tags)
@@ -186,8 +188,12 @@ def create_queue(queue_name, account_number, region, attributes, tags):
             "Queue": gen_sqs_queue_link(region, response["QueueUrl"])
         })
 
+    except botocore.exceptions.ParamValidationError as e:
+        eh.add_log("Invalid Create Queue Parameters", {"error": str(e)}, is_error=True)
+        eh.perm_error(str(e), 20)
+
     except ClientError as e:
-        if e.response['Error']['Code'] == 'QueueNameExists':
+        if e.response['Error']['Code'] == 'InvalidAttributeValue':
             eh.add_log("Queue Already Exists", {"queue_name": queue_name})
             eh.add_op("get_queue")
             eh.complete_op("create_queue")

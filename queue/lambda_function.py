@@ -263,6 +263,7 @@ def delete_queue():
         sqs.delete_queue(
             QueueUrl = queue_url
         )
+        eh.add_log("Queue Deleted", {"queue_url": queue_url})
 
     except ClientError as e:
         if e.response['Error']['Code'] == 'AWS.SimpleQueueService.NonExistentQueue':

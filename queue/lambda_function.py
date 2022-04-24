@@ -41,7 +41,7 @@ def lambda_handler(event, context):
         policy = cdef.get("policy")
 
         kms_key_id = cdef.get("kms_key_id")
-        kms_key_reuse_seconds = cdef.get("kms_key_reuse_seconds") or 300
+        kms_key_reuse_seconds = cdef.get("kms_key_reuse_seconds") or (300 if kms_key_id else None)
         sqs_managed_sse = cdef.get("sqs_managed_sse")
 
         content_based_deduplication = cdef.get("content_based_deduplication")

@@ -4,7 +4,7 @@ import botocore
 import json
 import traceback
 
-from requests.utils import requote_url
+from requests.utils import quote
 from botocore.exceptions import ClientError
 
 from extutil import remove_none_attributes, account_context, ExtensionHandler, \
@@ -246,7 +246,7 @@ def gen_sqs_queue_arn(queue_name, account_number, region):
     return f"arn:aws:sqs:{region}:{account_number}:{queue_name}"
 
 def gen_sqs_queue_link(region, queue_url):
-    return f"https://{region}.console.aws.amazon.com/sqs/v2/home?region={region}#/queues/{requote_url(queue_url)}"
+    return f"https://{region}.console.aws.amazon.com/sqs/v2/home?region={region}#/queues/{quote(queue_url, safe='')}"
 
 
 @ext(handler=eh, op="delete_queue")

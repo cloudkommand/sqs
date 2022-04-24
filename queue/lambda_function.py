@@ -117,7 +117,7 @@ def get_queue_url(queue_name, account_number, region):
         eh.add_props({
             "arn": gen_sqs_queue_arn(queue_name, account_number, region),
             "url": response["QueueUrl"],
-            "name": response["QueueName"]
+            "name": queue_name
         })
 
         eh.add_links({

@@ -193,13 +193,7 @@ def create_queue(queue_name, account_number, region, attributes, tags):
         eh.perm_error(str(e), 20)
 
     except ClientError as e:
-        if e.response['Error']['Code'] == 'InvalidAttributeValue':
-            eh.add_log("Queue Already Exists", {"queue_name": queue_name})
-            eh.add_op("get_queue")
-            eh.complete_op("create_queue")
-            eh.retry_error("queue already exists", 20)
-        else:
-            handle_common_errors(e, eh, "Error Creating Queue", progress=20)
+        handle_common_errors(e, eh, "Error Creating Queue", progress=20)
 
 @ext(handler=eh, op="set_queue_attributes")
 def set_queue_attributes(attributes, tags):

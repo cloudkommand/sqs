@@ -24,7 +24,7 @@ def lambda_handler(event, context):
         cname = event.get("component_name")
         project_code = event.get("project_code")
         repo_id = event.get("repo_id")
-        fifo = cdef.get("fifo") or False
+        fifo = cdef.get("fifo")
         
         queue_name = cdef.get("name") or \
             (

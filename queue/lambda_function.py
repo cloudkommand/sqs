@@ -73,7 +73,7 @@ def lambda_handler(event, context):
             "DelaySeconds": delay_seconds,
             "MaximumMessageSize": maximum_message_size,
             "MessageRetentionPeriod": retention_seconds,
-            "Policy": json.dumps(policy),
+            "Policy": json.dumps(policy) if policy else None,
             "RedrivePolicy": remove_none_attributes({
                 "deadLetterTargetArn": dead_letter_queue_arn,
                 "maxReceiveCount": str(max_count_before_dead_letter) if max_count_before_dead_letter else None

@@ -88,6 +88,7 @@ def lambda_handler(event, context):
         })
 
         attributes = {k:str(v) for k,v in attributes.items() if not isinstance(v, dict)}
+        print(attributes)
 
         get_queue_url(queue_name, account_number, region)
         get_queue(attributes, tags)

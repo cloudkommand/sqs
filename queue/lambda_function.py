@@ -149,7 +149,7 @@ def get_queue(attributes, tags):
                 break
 
         if not eh.ops.get("set_queue_attributes"):
-            eh.add_log("Nothing to do, exiting", {"current_attributes": current_attributes, "desired_attributes": attributes})
+            eh.add_log("Nothing to do. Exiting", {"current_attributes": current_attributes, "desired_attributes": attributes})
 
     except ClientError as e:
         if e.response["Error"]["Code"] == "AWS.SimpleQueueService.NonExistentQueue":

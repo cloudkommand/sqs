@@ -39,7 +39,7 @@ def lambda_handler(event, context):
         dead_letter_queue_arn = cdef.get("dead_letter_queue_arn")
         max_count_before_dead_letter = cdef.get("max_count_before_dead_letter")
         policy = cdef.get("policy")
-        visibility_timeout = cdef.get("visibility_timeout") or 30
+        visibility_timeout = cdef.get("visibility_timeout", 30)
 
         kms_key_id = cdef.get("kms_key_id")
         kms_key_reuse_seconds = cdef.get("kms_key_reuse_seconds") or (300 if kms_key_id else None)

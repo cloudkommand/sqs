@@ -39,6 +39,7 @@ def lambda_handler(event, context):
         dead_letter_queue_arn = cdef.get("dead_letter_queue_arn")
         max_count_before_dead_letter = cdef.get("max_count_before_dead_letter")
         policy = cdef.get("policy")
+        visibility_timeout = cdef.get("visibility_timeout") or 30
 
         kms_key_id = cdef.get("kms_key_id")
         kms_key_reuse_seconds = cdef.get("kms_key_reuse_seconds") or (300 if kms_key_id else None)
@@ -78,6 +79,7 @@ def lambda_handler(event, context):
                 "deadLetterTargetArn": dead_letter_queue_arn,
                 "maxReceiveCount": str(max_count_before_dead_letter) if max_count_before_dead_letter else None
             }),
+            "VisibilityTimeout": visibility_timeout,
             "ContentBasedDeduplication": content_based_deduplication,
             "DeduplicationScope": deduplication_scope,
             "FifoQueue": fifo,

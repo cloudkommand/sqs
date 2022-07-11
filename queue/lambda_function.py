@@ -167,7 +167,7 @@ def get_queue(attributes, tags):
 
     if tags != current_tags:
         remove_tags = [k for k in current_tags.keys() if k not in tags]
-        add_tags = {k:v for k,v in tags.items() if k not in current_tags.keys()}
+        add_tags = {k:v for k,v in tags.items() if v != current_tags.get(k)}
         if remove_tags:
             eh.add_op("remove_tags", remove_tags)
         if add_tags:
@@ -223,7 +223,7 @@ def add_tags():
     tags = eh.ops.get("add_tags")
     queue_url = eh.state["queue_url"]
     try:
-        response = sqs.tag_policy(
+        response = sqs.tag_queue(
             QueueUrl=queue_url,
             Tags=tags
         )

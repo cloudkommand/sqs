@@ -150,9 +150,6 @@ def get_queue(attributes, tags):
                 print(type(v))
                 break
 
-        if not eh.ops.get("set_queue_attributes"):
-            eh.add_log("Nothing to do. Exiting", {"current_attributes": current_attributes, "desired_attributes": attributes})
-
     except ClientError as e:
         if e.response["Error"]["Code"] == "AWS.SimpleQueueService.NonExistentQueue":
             eh.add_op("create_queue")
@@ -172,6 +169,11 @@ def get_queue(attributes, tags):
             eh.add_op("remove_tags", remove_tags)
         if add_tags:
             eh.add_op("add_tags", add_tags)
+
+    #Not necessary. Should be 1 because we still have the get queue attribute
+    if len(eh.ops.keys()) == 1:
+        eh.add_log("Nothing to do. Exiting", {"current_attributes": current_attributes, "desired_attributes": attributes})
+
 
 
 @ext(handler=eh, op="create_queue")

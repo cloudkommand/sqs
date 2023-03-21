@@ -5,6 +5,7 @@
             "displayname": "CK SQS Queue",
             "description": "Deploys an AWS SQS Queue. SQS queues are simple queues.",
             "cloud": "AWS",
+            "ck_plugin_tier": 2,
             "resources": ["AWS::sqs::queue"],
             "policy": {
                 "Version": "2012-10-17",
@@ -40,7 +41,8 @@
                     "fifo": {
                         "type": "boolean",
                         "description": "Whether the queue is FIFO or not.",
-                        "default": false
+                        "default": false,
+                        "common": true
                     },
                     "delay_seconds": {
                         "type": "integer",
@@ -65,10 +67,11 @@
                     },
                     "visibility_timeout": {
                         "type": "integer",
-                        "description": "The number of seconds after a message is received before it is made visible to other consumers.",
+                        "description": "The number of seconds after a message is received by a consumer before it is made visible to other consumers. If using SQS with Lambda, set this to 10% more than the timeout of the invoked Lambda for best results.",
                         "default": 30,
                         "minimum": 0,
-                        "maximum": 43200
+                        "maximum": 43200,
+                        "common": true
                     },
                     "policy": {
                         "type": "object",
@@ -86,7 +89,7 @@
                     "sqs_managed_sse": {
                         "type": "boolean",
                         "description": "Whether to use Amazon SQS managed server-side encryption.",
-                        "default": false
+                        "default": true
                     },
                     "content_based_deduplication": {
                         "type": "boolean",
@@ -105,7 +108,8 @@
                     },
                     "tags": {
                         "type": "object",
-                        "description": "The tags to attach to this queue"
+                        "description": "The tags to attach to this queue",
+                        "common": true
                     }
                 }
             },
@@ -122,7 +126,30 @@
                     "type": "string",
                     "description": "The URL of the queue."
                 }
-            }
+            },
+            "examples": [
+                {
+                    "displayname": "FIFO Queue with Tags",
+                    "notes": "Pass fifo: true to create a FIFO queue. Pass tags to attach tags to the queue.",
+                    "definition": {
+                        "type": "&sqs.queue",
+                        "fifo": true,
+                        "visibility_timeout": 220,
+                        "tags": {
+                            "foo": "bar"
+                        }
+                    }
+                },
+                {
+                    "displayname": "Queue with Dead Letter Queue",
+                    "notes": "Pass dead_letter_queue_arn and max_count_before_dead_letter to create a queue with a dead letter queue.",
+                    "definition": {
+                        "type": "&sqs.queue",
+                        "dead_letter_queue_arn": "&dl_q:props.arn",
+                        "max_count_before_dead_letter": 5
+                    }
+                }
+            ]
         }
     }
 }

@@ -10,15 +10,26 @@ from botocore.exceptions import ClientError
 from extutil import remove_none_attributes, account_context, ExtensionHandler, \
     ext, component_safe_name, handle_common_errors
 
+# create instance of ExtensionHandler
 eh = ExtensionHandler()
 
+# create SQS client
 sqs = boto3.client("sqs")
+
+# define Lambda handler
 def lambda_handler(event, context):
     try:
+        # print event for debugging purposes
         print(f"event = {event}")
+        
+        # extract account number and region from Lambda context
         account_number = account_context(context)['number']
         region = account_context(context)['region']
+        
+        # capture the event with the ExtensionHandler
         eh.capture_event(event)
+        
+        # extract relevant data from the event
         prev_state = event.get("prev_state")
         cdef = event.get("component_def")
         cname = event.get("component_name")
@@ -26,6 +37,7 @@ def lambda_handler(event, context):
         repo_id = event.get("repo_id")
         fifo = cdef.get("fifo")
         
+        # determine queue name
         queue_name = cdef.get("name") or \
             (
                 component_safe_name(project_code, repo_id, cname, max_chars=80) 
@@ -33,6 +45,7 @@ def lambda_handler(event, context):
                 f"{component_safe_name(project_code, repo_id, cname, max_chars=75)}.fifo"
             )
         
+        # extract relevant properties from the component definition
         delay_seconds = cdef.get("delay_seconds") or 0
         maximum_message_size = 262144
         retention_seconds = cdef.get("retention_seconds") or 345600
@@ -54,6 +67,7 @@ def lambda_handler(event, context):
         pass_back_data = event.get("pass_back_data", {})
         if pass_back_data:
             pass
+        # handle "upsert" operation
         elif event.get("op") == "upsert":
             old_queue_name = None
             old_queue_url = None
@@ -63,13 +77,18 @@ def lambda_handler(event, context):
             except:
                 pass
             
+            # add "get_queue_url" operation to ExtensionHandler
             eh.add_op("get_queue_url")
+            
+            # if the queue name has changed, add "delete_queue" operation to ExtensionHandler
             if old_queue_name and queue_name != old_queue_name:
                 eh.add_op("delete_queue", {"url":old_queue_url, "only_delete": False})
 
+        # handle "delete" operation
         elif event.get("op") == "delete":
             eh.add_op("delete_queue", {"url":prev_state.get("props", {}).get("url"), "only_delete": True})
         
+        # remove any None values from the attributes dictionary
         attributes = remove_none_attributes({
             "DelaySeconds": delay_seconds,
             "MaximumMessageSize": maximum_message_size,
